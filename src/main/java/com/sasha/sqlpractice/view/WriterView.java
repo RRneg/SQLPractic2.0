@@ -1,9 +1,6 @@
 package com.sasha.sqlpractice.view;
 
-import Controller.PostController;
-import Controller.WriterController;
-import Model.Post;
-import Model.Writer;
+
 import com.sasha.sqlpractice.controller.PostController;
 import com.sasha.sqlpractice.controller.WriterController;
 import com.sasha.sqlpractice.model.Post;

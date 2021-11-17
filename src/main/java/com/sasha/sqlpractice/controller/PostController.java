@@ -1,9 +1,9 @@
 package com.sasha.sqlpractice.controller;
 
-import Model.Label;
-import Model.Post;
-import Service.PostService;
+
 import com.sasha.sqlpractice.model.Label;
+import com.sasha.sqlpractice.model.Post;
+import com.sasha.sqlpractice.service.PostService;
 
 import java.util.List;
 

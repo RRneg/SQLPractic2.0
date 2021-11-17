@@ -1,9 +1,11 @@
 package com.sasha.sqlpractice.repository.jdbc;
 
-import Model.Label;
-import Model.Post;
-import Model.PostStatus;
+
+import com.sasha.sqlpractice.model.Label;
+import com.sasha.sqlpractice.model.PostStatus;
+import com.sasha.sqlpractice.model.Post;
 import com.sasha.sqlpractice.repository.PostRepository;
+import com.sasha.sqlpractice.utils.JdbcUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +20,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
 
     public List<Label> getLabelsByPostId(Integer id) {
         String sql = "SELECT LABELS_ID FROM POST_LABELS WHERE POST_ID=" + id;
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 labels.add(jdbcLabelRepository.getById(rs.getInt(2)));
@@ -32,7 +34,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
 
     public Post getById(Integer id) {
         String sql = "SELECT from POSTS WHERE ID =?";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             ResultSet rs = pstm.executeQuery();
             if (rs.getString(6).equals(PostStatus.DELETED)) {
@@ -53,7 +55,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
 
     public Post update(Post post) {
         String sql = "UPDATE POSTS CONTENT=? WHERE ID = ?";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, post.getContent());
             pstm.setInt(2, post.getId());
             pstm.executeUpdate();
@@ -66,7 +68,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
 
     public void deleteById(Integer id) {
         String sql = "UPDATE POSTS(POST_STATUS) VALUE(DELETE) WHERE ID =?";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -82,7 +84,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
     private List<Post> getAllInternal() {
         List<Post> posts = null;
         String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 post.setId(rs.getInt(1));
@@ -99,21 +101,21 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
         return posts;
     }
 
-    public Post saveNewPost(String content, List<Label> labels) {
+    public Post saveNew(String content, List<Label> labels) {
         String sql = "INSERT POSTS CONTENT=?, POST_STATUS=?";
         String sql1 = "SELECT FROM POSTS WHERE ID = ?";
         Post post = new Post();
         post.setContent(content);
         post.setLabels(labels);
         post.setPostStatus(PostStatus.ACTIVE);
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatementBackId(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, content);
             pstm.setString(2, PostStatus.ACTIVE.toString());
             int affectedRows = pstm.executeUpdate();
             insertLabelsInPostLabels(affectedRows, labels);
             post.setId(affectedRows);
 
-            try (PreparedStatement pstm1 = UtilClass.StatmentUtil.getPrStatement(sql1)) {
+            try (PreparedStatement pstm1 = JdbcUtils.getPrStatement(sql1)) {
                 pstm1.setInt(1, affectedRows);
                 ResultSet rs = pstm1.executeQuery();
                 post.setCreated(rs.getDate(3).toString());
@@ -128,7 +130,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
         for (Label label : labels) {
             String sql = "INSERT POST_LABELS (LABEL_ID, POSTS_ID) " +
                     "VALUE (?, ?)";
-            try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+            try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
                 pstm.setInt(1, postId);
                 pstm.setInt(2, label.getId());
                 pstm.executeUpdate();

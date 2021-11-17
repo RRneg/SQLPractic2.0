@@ -1,33 +1,30 @@
 package com.sasha.sqlpractice.service;
 
-import Repository.JDBCPostRepositoryImpl;
-import Model.Label;
-import Model.Post;
+
 import com.sasha.sqlpractice.model.Label;
+import com.sasha.sqlpractice.model.Post;
 import com.sasha.sqlpractice.repository.jdbc.JDBCPostRepositoryImpl;
 
 import java.util.List;
 
 public class PostService {
-    private JDBCPostRepositoryImpl jdbcPostRepository = new JDBCPostRepositoryImpl();
+    private JDBCPostRepositoryImpl postRepository = new JDBCPostRepositoryImpl();
 
     public Post getById(Integer id){
-        return jdbcPostRepository.getById(id);
+        return postRepository.getById(id);
     }
 
     public Post update(Post post){
-        return jdbcPostRepository.update(post);
+        return postRepository.update(post);
     }
 
-    public void deleteById(Integer id){
-        jdbcPostRepository.getById(id);
-    }
+    public void deleteById(Integer id){postRepository.deleteById(id);}
 
     public List<Post> getAll(){
-        return jdbcPostRepository.getAll();
+        return postRepository.getAll();
     }
 
     public Post saveNewPost(String content, List<Label> labels){
-        return jdbcPostRepository.saveNewPost(content, labels);
+        return postRepository.saveNew(content, labels);
     }
 }

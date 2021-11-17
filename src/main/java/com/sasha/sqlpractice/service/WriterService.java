@@ -1,8 +1,8 @@
 package com.sasha.sqlpractice.service;
 
-import Repository.JDBCWriterRepositoryImpl;
-import Model.Post;
-import Model.Writer;
+
+import com.sasha.sqlpractice.model.Post;
+import com.sasha.sqlpractice.model.Writer;
 import com.sasha.sqlpractice.repository.jdbc.JDBCWriterRepositoryImpl;
 
 import java.util.List;
@@ -27,6 +27,6 @@ public class WriterService {
     }
 
     public Writer saveNewWriter(String firstName, String lastName, List<Post> posts){
-        return jdbcWriterRepository.saveNewWriter(firstName, lastName, posts);
+        return jdbcWriterRepository.saveNew(firstName, lastName, posts);
     }
 }

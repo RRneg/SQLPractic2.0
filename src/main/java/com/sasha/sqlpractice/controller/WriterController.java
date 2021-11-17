@@ -1,7 +1,9 @@
 package com.sasha.sqlpractice.controller;
 
-import Model.Writer;
-import Service.WriterService;
+
+
+import com.sasha.sqlpractice.model.Writer;
+import com.sasha.sqlpractice.service.WriterService;
 
 import java.util.List;
 

@@ -1,9 +1,11 @@
 package com.sasha.sqlpractice.repository.jdbc;
 
-import Model.Post;
-import Model.PostStatus;
-import Model.Writer;
+
+import com.sasha.sqlpractice.model.Writer;
+import com.sasha.sqlpractice.model.Post;
+import com.sasha.sqlpractice.model.PostStatus;
 import com.sasha.sqlpractice.repository.WriterRepository;
+import com.sasha.sqlpractice.utils.JdbcUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +21,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
     private List<Post> getPostsByWriterId(Integer id) {
         List<Post> posts = null;
         String sql = "SELECT FROM WRITER_POSTS WHERE WRITER_ID=" + id;
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 post = jdbcPostRepository.getById(rs.getInt(2));
@@ -35,7 +37,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
 
     private void insertPostsInWriterPosts(Integer writerId, List<Post> posts) {
         String sql = "INSERT WRITER_POSTS(WRITER_ID, POST_ID) VALUE (?, ?)";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             for (Post post : posts) {
                 pstm.setInt(1, writerId);
                 pstm.setInt(2, post.getId());
@@ -49,7 +51,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
 
     public Writer getById(Integer id) {
         String sql = "SELECT from WRITERS WHERE ID =?";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1,id);
             ResultSet rs = pstm.executeQuery();
             writer.setId(id);
@@ -66,7 +68,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
 
     public Writer update(Writer writer) {
         String sql = "UPDATE WRITERS SET FIRST_NAME =? , LAST NAME=? WHERE ID = ?";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, writer.getFirstName());
             pstm.setString(2, writer.getLastName());
             pstm.setInt(3, writer.getId());
@@ -80,7 +82,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
 
     public void deleteById(Integer id) {
         String sql = "DELETE FROM WRITERS WHERE ID=?";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -96,7 +98,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
     private List<Writer> getAllInternal() {
         List<Writer> writers = null;
         String sql = "SELECT * FROM WRITERS";
-        try (PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatement(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 writer.setId(rs.getInt(1));
@@ -111,9 +113,9 @@ public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Intege
         return writers;
     }
 
-    public Writer saveNewWriter(String firstName, String lastName, List<Post> posts) {
+    public Writer saveNew(String firstName, String lastName, List<Post> posts) {
         String sql = "INSERT WRITERS FIRST_NAME=?, LAST_NAME=?";
-        try(PreparedStatement pstm = UtilClass.StatmentUtil.getPrStatementBackId(sql)){
+        try(PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)){
             pstm.setString(1, firstName);
             pstm.setString(2, lastName);
             int affectedRows = pstm.executeUpdate();

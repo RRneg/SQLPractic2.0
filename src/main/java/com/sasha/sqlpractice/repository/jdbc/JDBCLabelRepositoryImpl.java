@@ -3,7 +3,7 @@ package com.sasha.sqlpractice.repository.jdbc;
 import com.sasha.sqlpractice.model.Label;
 import com.sasha.sqlpractice.repository.LabelRepository;
 import com.sasha.sqlpractice.utils.JdbcUtils;
-import liquibase.pro.packaged.L;
+
 
 import java.sql.*;
 import java.util.List;
@@ -25,8 +25,8 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
     }
 
 
-    @Override
-    public Label create(Label label) {
+
+    public Label saveNew(Label label){
         String sql = "INSERT LABELS(NAME) VALUES(?)";
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, label.getName());
