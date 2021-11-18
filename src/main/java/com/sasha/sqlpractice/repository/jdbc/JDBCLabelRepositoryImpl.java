@@ -26,7 +26,7 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
 
 
-    public Label saveNew(Label label){
+    public Label save(Label label){
         String sql = "INSERT LABELS(NAME) VALUES(?)";
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, label.getName());

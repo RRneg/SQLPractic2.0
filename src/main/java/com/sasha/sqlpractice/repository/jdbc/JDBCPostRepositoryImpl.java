@@ -4,6 +4,7 @@ package com.sasha.sqlpractice.repository.jdbc;
 import com.sasha.sqlpractice.model.Label;
 import com.sasha.sqlpractice.model.PostStatus;
 import com.sasha.sqlpractice.model.Post;
+import com.sasha.sqlpractice.repository.LabelRepository;
 import com.sasha.sqlpractice.repository.PostRepository;
 import com.sasha.sqlpractice.utils.JdbcUtils;
 
@@ -14,16 +15,16 @@ import java.util.List;
 
 public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
 
-    private Post post = new Post();
+
     private List<Label> labels = null;
-    private JDBCLabelRepositoryImpl jdbcLabelRepository = new JDBCLabelRepositoryImpl();
+    private LabelRepository labelRepository = new JDBCLabelRepositoryImpl();
 
     public List<Label> getLabelsByPostId(Integer id) {
         String sql = "SELECT LABELS_ID FROM POST_LABELS WHERE POST_ID=" + id;
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
-                labels.add(jdbcLabelRepository.getById(rs.getInt(2)));
+                labels.add(labelRepository.getById(rs.getInt(2)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,6 +35,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
 
     public Post getById(Integer id) {
         String sql = "SELECT from POSTS WHERE ID =?";
+        Post post = new Post();
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             ResultSet rs = pstm.executeQuery();
@@ -82,6 +84,7 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
     }
 
     private List<Post> getAllInternal() {
+        Post post = new Post();
         List<Post> posts = null;
         String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE";
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
@@ -101,12 +104,11 @@ public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
         return posts;
     }
 
-    public Post saveNew(String content, List<Label> labels) {
+    public Post save(Post post) {
         String sql = "INSERT POSTS CONTENT=?, POST_STATUS=?";
         String sql1 = "SELECT FROM POSTS WHERE ID = ?";
-        Post post = new Post();
-        post.setContent(content);
-        post.setLabels(labels);
+        String content = post.getContent();
+        List<Label> labels = post.getLabels();
         post.setPostStatus(PostStatus.ACTIVE);
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, content);

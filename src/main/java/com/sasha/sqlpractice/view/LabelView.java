@@ -88,7 +88,9 @@ public class LabelView {
     }
 
     private void viewNewLabel(String name) {
-        System.out.println("Ваша запись создана:  " +labelController.saveNewLabel(name).toString());
+        Label label = new Label();
+        label.setName(name);
+        System.out.println("Ваша запись создана:  " +labelController.saveNewLabel(label).toString());
     }
 
 

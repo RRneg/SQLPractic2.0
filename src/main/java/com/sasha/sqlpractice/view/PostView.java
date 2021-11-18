@@ -141,12 +141,13 @@ public class PostView {
     }
 
     private void viewAddMenuPost() {
+        Post post = new Post();
         System.out.println(menu11);
-        String content = scanner.next();
+        post.setContent(scanner.next());
         labelView.viewAllLabel();
         System.out.println(menu12);
-        String labelsIds = scanner.next();
-        System.out.println(postController.saveNewPost(content, stringLabelToList(labelsIds)).toString());
+        post.setLabels(stringLabelToList(scanner.next()));
+        System.out.println(postController.saveNewPost(post).toString());
 
     }
 }

@@ -15,6 +15,8 @@ public interface GenericRepository<T, ID> {
 
     List<T> getAll();
 
+    T save(T t);
+
 
 
 }

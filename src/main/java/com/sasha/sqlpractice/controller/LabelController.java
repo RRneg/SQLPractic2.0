@@ -9,9 +9,7 @@ import java.util.List;
 public class LabelController {
     LabelService labelService = new LabelService();
 
-    public Label saveNewLabel(String name) {
-        Label label = new Label();
-        label.setName(name);
+    public Label saveNewLabel(Label label) {
        return labelService.saveNewLabel(label);
     }
 

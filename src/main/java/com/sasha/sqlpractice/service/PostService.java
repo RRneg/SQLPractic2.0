@@ -1,14 +1,14 @@
 package com.sasha.sqlpractice.service;
 
 
-import com.sasha.sqlpractice.model.Label;
 import com.sasha.sqlpractice.model.Post;
+import com.sasha.sqlpractice.repository.PostRepository;
 import com.sasha.sqlpractice.repository.jdbc.JDBCPostRepositoryImpl;
 
 import java.util.List;
 
 public class PostService {
-    private JDBCPostRepositoryImpl postRepository = new JDBCPostRepositoryImpl();
+    private PostRepository postRepository = new JDBCPostRepositoryImpl();
 
     public Post getById(Integer id){
         return postRepository.getById(id);
@@ -24,7 +24,7 @@ public class PostService {
         return postRepository.getAll();
     }
 
-    public Post saveNewPost(String content, List<Label> labels){
-        return postRepository.saveNew(content, labels);
+    public Post saveNewPost(Post post){
+        return postRepository.save(post);
     }
 }

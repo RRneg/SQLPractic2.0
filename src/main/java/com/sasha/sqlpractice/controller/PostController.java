@@ -12,8 +12,8 @@ public class PostController {
     LabelController labelController = new LabelController();
 
 
-    public Post saveNewPost(String content, List <Label> labels) {
-       return postService.saveNewPost(content, labels);
+    public Post saveNewPost(Post post) {
+       return postService.saveNewPost(post);
     }
 
 
