@@ -12,6 +12,7 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     private final static String GET_BY_ID_QUERY = "SELECT from LABELS where ID = %d";
 
+
     public Label update(Label label) {
         String sql = "INSERT LABELS(NAME) VALUE(?) WHERE ID= ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
