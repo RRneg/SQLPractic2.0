@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class JDBCWriterRepositoryImpl implements WriterRepository<Writer, Integer> {
+public class JDBCWriterRepositoryImpl implements WriterRepository {
     Writer writer = new Writer();
     JDBCPostRepositoryImpl jdbcPostRepository = new JDBCPostRepositoryImpl();
     Post post = new Post();

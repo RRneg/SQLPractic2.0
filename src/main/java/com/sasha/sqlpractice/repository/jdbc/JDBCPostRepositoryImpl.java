@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class JDBCPostRepositoryImpl implements PostRepository<Post, Integer> {
+public class JDBCPostRepositoryImpl implements PostRepository {
 
 
     private List<Label> labels = null;
