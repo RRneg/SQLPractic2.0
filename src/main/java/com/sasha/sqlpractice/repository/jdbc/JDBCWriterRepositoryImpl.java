@@ -113,19 +113,15 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
         return writers;
     }
 
-    public Writer saveNew(String firstName, String lastName, List<Post> posts) {
+    public Writer save(Writer writer) {
         String sql = "INSERT WRITERS FIRST_NAME=?, LAST_NAME=?";
         try(PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)){
-            pstm.setString(1, firstName);
-            pstm.setString(2, lastName);
+            pstm.setString(1, writer.getFirstName());
+            pstm.setString(2, writer.getLastName());
             int affectedRows = pstm.executeUpdate();
-            insertPostsInWriterPosts(affectedRows, posts);
+            insertPostsInWriterPosts(affectedRows, writer.getPosts());
             writer.setId(affectedRows);
-            writer.setFirstName(firstName);
-            writer.setLastName(lastName);
-            writer.setPosts(posts);
-
-        }
+           }
         catch (SQLException e){e.printStackTrace();}
         return writer;
     }

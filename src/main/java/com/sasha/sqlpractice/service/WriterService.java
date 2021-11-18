@@ -26,7 +26,7 @@ public class WriterService {
         return jdbcWriterRepository.getAll();
     }
 
-    public Writer saveNewWriter(String firstName, String lastName, List<Post> posts){
-        return jdbcWriterRepository.saveNew(firstName, lastName, posts);
+    public Writer saveNewWriter(Writer writer){
+        return jdbcWriterRepository.save(writer);
     }
 }

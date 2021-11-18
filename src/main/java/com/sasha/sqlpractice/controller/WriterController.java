@@ -11,7 +11,7 @@ public class WriterController {
     private WriterService writerService = new WriterService();
 
 
-    public Writer newWriter(Writer writer) { return writer;}
+    public Writer newWriter(Writer writer) { return writerService.saveNewWriter(writer);}
 
     public Writer update(Writer writer) {return writerService.update(writer);}
 
