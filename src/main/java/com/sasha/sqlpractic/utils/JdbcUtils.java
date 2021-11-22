@@ -29,6 +29,10 @@ public class JdbcUtils {
     }
 
     public static PreparedStatement getPrStatementBackId(String sql) throws SQLException{
-        return getConnect().prepareStatement(sql, com.mysql.jdbc.Statement.RETURN_GENERATED_KEYS);
+        return getConnect().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    }
+
+    public static PreparedStatement getPrStatmentBackIdCreated(String sql) throws SQLException{
+        return getConnect().prepareStatement(sql,  new String[] { "ID", "CREATED" });
     }
 }

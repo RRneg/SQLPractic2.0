@@ -114,6 +114,8 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
     }
 
     public Writer save(Writer writer) {
+        // переписать получение id, смотри POST
+
         String sql = "INSERT WRITERS FIRST_NAME=?, LAST_NAME=?";
         try(PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)){
             pstm.setString(1, writer.getFirstName());

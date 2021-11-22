@@ -122,23 +122,21 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         String content = post.getContent();
         List<Label> labels = post.getLabels();
         post.setPostStatus(PostStatus.ACTIVE);
-        try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatmentBackIdCreated(sql)) {
             pstm.setString(1, content);
             pstm.setString(2, PostStatus.ACTIVE.toString());
             pstm.execute();
             ResultSet rs = pstm.getGeneratedKeys();
             int id = 0;
+            String created = null;
             if (rs.next()) {
                id = rs.getInt(1);
+               created = rs.getDate(2).toString();
             }
             insertLabelsInPostLabels(id, labels);
             post.setId(id);
+            post.setCreated(created);
 
-            try (PreparedStatement pstm1 = JdbcUtils.getPrStatement(sql1)) {
-                pstm1.setInt(1, id);
-                ResultSet rs1 = pstm1.executeQuery();
-                post.setCreated(rs1.getDate(3).toString());
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
