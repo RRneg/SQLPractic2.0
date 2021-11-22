@@ -97,7 +97,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private List<Post> getAllInternal() {
         Post post = new Post();
-        List<Post> posts = null;
+        List<Post> posts = new ArrayList<>();
         String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE";
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             ResultSet rs = pstm.executeQuery();
@@ -125,14 +125,19 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, content);
             pstm.setString(2, PostStatus.ACTIVE.toString());
-            int affectedRows = pstm.executeUpdate();
-            insertLabelsInPostLabels(affectedRows, labels);
-            post.setId(affectedRows);
+            pstm.execute();
+            ResultSet rs = pstm.getGeneratedKeys();
+            int id = 0;
+            if (rs.next()) {
+               id = rs.getInt(1);
+            }
+            insertLabelsInPostLabels(id, labels);
+            post.setId(id);
 
             try (PreparedStatement pstm1 = JdbcUtils.getPrStatement(sql1)) {
-                pstm1.setInt(1, affectedRows);
-                ResultSet rs = pstm1.executeQuery();
-                post.setCreated(rs.getDate(3).toString());
+                pstm1.setInt(1, id);
+                ResultSet rs1 = pstm1.executeQuery();
+                post.setCreated(rs1.getDate(3).toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();
