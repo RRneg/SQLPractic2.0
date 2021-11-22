@@ -17,10 +17,11 @@ import java.util.List;
 public class JDBCPostRepositoryImpl implements PostRepository {
 
 
-    private List<Label> labels = new ArrayList<>();
+
     private LabelRepository labelRepository = new JDBCLabelRepositoryImpl();
 
-    public List<Label> getLabelsByPostId(Integer id) {
+    private List<Label> getLabelsByPostId(Integer id) {
+        List<Label> labels = new ArrayList<>();
         String sql = "select ID, NAME from LABELS " +
                 "join POST_LABELS on POST_LABELS.POST_ID = ?" +
                 " and POST_LABELS.LABELS_ID = LABELS.ID";
@@ -38,7 +39,10 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
 
     public Post getById(Integer id) {
-        String sql = "SELECT from POSTS WHERE ID =?";
+       String sql = "SELECT ID, CONTENT, CREATED, UPLOADED, POST_STATUS" +
+               " FROM POSTS WHERE ID = ? " +
+               "JOIN POST_LABELS ON POST.ID = POST_LABELS.POST_ID " +
+               "JOIN LABELS ON POST_LABELS.LABELS.ID = LABELS.ID";
         Post post = new Post();
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
@@ -47,11 +51,15 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                 post = null;
                 System.out.println("Запись с ID = " + id + " удалена или не существует...");
             } else {
+                List<Label> labels = new ArrayList<>();
                 post.setId(rs.getInt(1));
                 post.setContent(rs.getString(2));
                 post.setCreated(rs.getDate(3).toString());
                 post.setUpdated(rs.getDate(4).toString());
-                post.setLabels(getLabelsByPostId(id));
+                while (rs.next()){
+                labels.add(new Label(rs.getInt(6), rs.getString(7)));
+                }
+                post.setLabels(labels);
             }
         } catch (SQLException e) {
             e.printStackTrace();
