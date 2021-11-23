@@ -42,7 +42,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
        String sql = "SELECT ID, CONTENT, CREATED, UPLOADED, POST_STATUS" +
                " FROM POSTS WHERE ID = ? " +
                "JOIN POST_LABELS ON POST.ID = POST_LABELS.POST_ID " +
-               "JOIN LABELS ON POST_LABELS.LABELS.ID = LABELS.ID";
+               "JOIN LABELS ON POST_LABELS.LABELS_ID = LABELS.ID";
         Post post = new Post();
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);

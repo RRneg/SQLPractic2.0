@@ -28,12 +28,16 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
 
     public Label save(Label label){
-        // Переписать получение id,  см Post
-
         String sql = "INSERT LABELS(NAME) VALUES(?)";
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, label.getName());
-            label.setId(pstm.executeUpdate());
+            pstm.execute();
+            ResultSet rs = pstm.getGeneratedKeys();
+            int id = 0;
+            if(rs.next()){
+                id = rs.getInt(1);
+                label.setId(id);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
