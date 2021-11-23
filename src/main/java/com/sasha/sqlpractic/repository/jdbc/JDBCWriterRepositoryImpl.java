@@ -84,9 +84,9 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
             else {
                 int labelId = rs.getInt(9);
                 if(!rs.wasNull()){
-                    label.setId(labelId);
-                    label.setName(rs.getString(10));
-                    labels.add(label);
+                  label.setId(labelId);
+                  label.setName(rs.getString(10));
+                  labels.add(label);
                 }
                 post.setLabels(labels);
             }
