@@ -92,24 +92,56 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     }
 
     public List<Post> getAll() {
-        Post post = new Post();
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE";
-        try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
+        Post post = new Post();
+        Label label = new Label();
+        List<Label> labels = new ArrayList<>();
+        String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE" +
+                "JOIN POST_LABELS ON POST_LABELS.POST_ID = POSTS.ID " +
+                "JOIN LABELS ON LABELS.ID = POST_LABEL.LABELS_ID";
+        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
+            int size = getResultSetRowCount(rs);
             while (rs.next()) {
-                post.setId(rs.getInt(1));
-                post.setContent(rs.getString(2));
-                post.setCreated(rs.getDate(3).toString());
-                post.setUpdated(rs.getDate(4).toString());
-                post.setLabels(getLabelsByPostId(rs.getInt(1)));
-                posts.add(post);
+
+               int postId = rs.getInt(1);
+               if(!rs.wasNull()){
+                   labels.clear();
+                   if(rs.getRow() != 1){posts.add(post);}
+                   post.setId(postId);
+                   post.setContent(rs.getString(2));
+                   post.setCreated(rs.getDate(3).toString());
+                   post.setUpdated(rs.getDate(4).toString());
+                   post.setPostStatus(PostStatus.valueOf(rs.getString(5)));
+                   }
+               int labelId = rs.getInt(6);
+                if (!rs.wasNull()) {
+                   label.setId(labelId);
+                   label.setName(rs.getString(7));
+                   labels.add(label);
+               }
+                post.setLabels(labels);
+               if(rs.getRow() == size){posts.add(post);}
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return posts;
+    }
+
+
+    private int getResultSetRowCount(ResultSet rs) {
+        int size = 0;
+        try {
+            rs.last();
+            size = rs.getRow();
+            rs.beforeFirst();
+        }
+        catch(SQLException ex) {
+            return 0;
+        }
+        return size;
     }
 
 
