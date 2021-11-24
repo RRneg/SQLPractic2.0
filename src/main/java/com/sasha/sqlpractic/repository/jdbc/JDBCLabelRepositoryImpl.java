@@ -70,10 +70,6 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
     }
 
     public List<Label> getAll() {
-        return getAllInternal();
-    }
-
-    private List<Label> getAllInternal() {
         List<Label> labels = null;
         String sql = "SELECT * from LABELS";
 
@@ -89,5 +85,6 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
             e.printStackTrace();
         }
         return labels;
+
     }
 }

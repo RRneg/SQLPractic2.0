@@ -92,10 +92,6 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     }
 
     public List<Post> getAll() {
-        return getAllInternal();
-    }
-
-    private List<Post> getAllInternal() {
         Post post = new Post();
         List<Post> posts = new ArrayList<>();
         String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE";
@@ -115,6 +111,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
         return posts;
     }
+
+
 
     public Post save(Post post) {
         String sql = "INSERT POSTS CONTENT=?, POST_STATUS=?";

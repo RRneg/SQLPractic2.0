@@ -1,5 +1,7 @@
 package com.sasha.sqlpractic.view;
 
+import com.sasha.sqlpractic.utils.JdbcUtils;
+
 import java.util.Scanner;
 
 public class SuperView {

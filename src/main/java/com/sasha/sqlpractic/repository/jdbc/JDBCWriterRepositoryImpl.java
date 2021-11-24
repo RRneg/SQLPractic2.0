@@ -128,10 +128,6 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
     }
 
     public List<Writer> getAll() {
-        return getAllInternal();
-    }
-
-    private List<Writer> getAllInternal() {
         Writer writer = new Writer();
         List<Writer> writers = null;
         String sql = "SELECT * FROM WRITERS";
@@ -149,6 +145,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
         }
         return writers;
     }
+
 
     public Writer save(Writer writer) {
         String sql = "INSERT WRITERS FIRST_NAME=?, LAST_NAME=?";
