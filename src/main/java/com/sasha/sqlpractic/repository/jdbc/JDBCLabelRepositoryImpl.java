@@ -10,9 +10,6 @@ import java.util.List;
 
 public class JDBCLabelRepositoryImpl implements LabelRepository {
 
-    private final static String GET_BY_ID_QUERY = "SELECT from LABELS where ID = %d";
-
-
     public Label update(Label label) {
         String sql = "INSERT LABELS(NAME) VALUE(?) WHERE ID= ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
@@ -26,15 +23,14 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
     }
 
 
-
-    public Label save(Label label){
+    public Label save(Label label) {
         String sql = "INSERT LABELS(NAME) VALUES(?)";
         try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, label.getName());
             pstm.execute();
             ResultSet rs = pstm.getGeneratedKeys();
             int id = 0;
-            if(rs.next()){
+            if (rs.next()) {
                 id = rs.getInt(1);
                 label.setId(id);
             }
@@ -46,7 +42,7 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     public Label getById(Integer id) {
         Label label = new Label();
-        String sql = String.format(GET_BY_ID_QUERY, id);
+        String sql = "SELECT from LABELS where ID = ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             ResultSet rs = pstm.executeQuery();

@@ -4,7 +4,6 @@ package com.sasha.sqlpractic.repository.jdbc;
 import com.sasha.sqlpractic.model.Label;
 import com.sasha.sqlpractic.model.PostStatus;
 import com.sasha.sqlpractic.model.Post;
-import com.sasha.sqlpractic.repository.LabelRepository;
 import com.sasha.sqlpractic.repository.PostRepository;
 import com.sasha.sqlpractic.utils.JdbcUtils;
 
@@ -16,17 +15,11 @@ import java.util.List;
 
 public class JDBCPostRepositoryImpl implements PostRepository {
 
-
-
-    private LabelRepository labelRepository = new JDBCLabelRepositoryImpl();
-
-
-
     public Post getById(Integer id) {
-       String sql = "SELECT ID, CONTENT, CREATED, UPLOADED, POST_STATUS" +
-               " FROM POSTS WHERE ID = ? " +
-               "JOIN POST_LABELS ON POST.ID = POST_LABELS.POST_ID " +
-               "JOIN LABELS ON POST_LABELS.LABELS_ID = LABELS.ID";
+        String sql = "SELECT ID, CONTENT, CREATED, UPLOADED, POST_STATUS" +
+                " FROM POSTS WHERE ID = ? " +
+                "JOIN POST_LABELS ON POST.ID = POST_LABELS.POST_ID " +
+                "JOIN LABELS ON POST_LABELS.LABELS_ID = LABELS.ID";
         Post post = new Post();
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
@@ -40,8 +33,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                 post.setContent(rs.getString(2));
                 post.setCreated(rs.getDate(3).toString());
                 post.setUpdated(rs.getDate(4).toString());
-                while (rs.next()){
-                labels.add(new Label(rs.getInt(6), rs.getString(7)));
+                while (rs.next()) {
+                    labels.add(new Label(rs.getInt(6), rs.getString(7)));
                 }
                 post.setLabels(labels);
             }
@@ -88,24 +81,28 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             int size = getResultSetRowCount(rs);
             while (rs.next()) {
 
-               int postId = rs.getInt(1);
-               if(!rs.wasNull()){
-                   labels.clear();
-                   if(rs.getRow() != 1){posts.add(post);}
-                   post.setId(postId);
-                   post.setContent(rs.getString(2));
-                   post.setCreated(rs.getDate(3).toString());
-                   post.setUpdated(rs.getDate(4).toString());
-                   post.setPostStatus(PostStatus.valueOf(rs.getString(5)));
-                   }
-               int labelId = rs.getInt(6);
+                int postId = rs.getInt(1);
                 if (!rs.wasNull()) {
-                   label.setId(labelId);
-                   label.setName(rs.getString(7));
-                   labels.add(label);
-               }
+                    labels.clear();
+                    if (rs.getRow() != 1) {
+                        posts.add(post);
+                    }
+                    post.setId(postId);
+                    post.setContent(rs.getString(2));
+                    post.setCreated(rs.getDate(3).toString());
+                    post.setUpdated(rs.getDate(4).toString());
+                    post.setPostStatus(PostStatus.valueOf(rs.getString(5)));
+                }
+                int labelId = rs.getInt(6);
+                if (!rs.wasNull()) {
+                    label.setId(labelId);
+                    label.setName(rs.getString(7));
+                    labels.add(label);
+                }
                 post.setLabels(labels);
-               if(rs.getRow() == size){posts.add(post);}
+                if (rs.getRow() == size) {
+                    posts.add(post);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,13 +118,11 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             rs.last();
             size = rs.getRow();
             rs.beforeFirst();
-        }
-        catch(SQLException ex) {
+        } catch (SQLException ex) {
             return 0;
         }
         return size;
     }
-
 
 
     public Post save(Post post) {
@@ -144,8 +139,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             int id = 0;
             String created = null;
             if (rs.next()) {
-               id = rs.getInt(1);
-               created = rs.getDate(2).toString();
+                id = rs.getInt(1);
+                created = rs.getDate(2).toString();
             }
             insertLabelsInPostLabels(id, labels);
             post.setId(id);
