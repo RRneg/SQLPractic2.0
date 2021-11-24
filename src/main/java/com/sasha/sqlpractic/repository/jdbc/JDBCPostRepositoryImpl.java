@@ -20,22 +20,6 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private LabelRepository labelRepository = new JDBCLabelRepositoryImpl();
 
-    private List<Label> getLabelsByPostId(Integer id) {
-        List<Label> labels = new ArrayList<>();
-        String sql = "select ID, NAME from LABELS " +
-                "join POST_LABELS on POST_LABELS.POST_ID = ?" +
-                " and POST_LABELS.LABELS_ID = LABELS.ID";
-        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
-            pstm.setInt(1, id);
-            ResultSet rs = pstm.executeQuery();
-            while (rs.next()) {
-                labels.add(new Label(rs.getInt(1), rs.getString(2)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return labels;
-    }
 
 
     public Post getById(Integer id) {
