@@ -3,8 +3,6 @@ package com.sasha.sqlpractic.service;
 import com.sasha.sqlpractic.model.Label;
 import com.sasha.sqlpractic.repository.LabelRepository;
 import junit.framework.TestCase;
-import liquibase.pro.packaged.L;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
