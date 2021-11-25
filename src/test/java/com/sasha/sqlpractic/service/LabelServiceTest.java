@@ -33,8 +33,7 @@ public class LabelServiceTest extends TestCase {
 
     public void testDeleteById() {
         LabelRepository labelRepositoryMock = Mockito.mock(LabelRepository.class);
-
-
+        Mockito.verify(labelRepositoryMock, Mockito.times(1)).deleteById(label.getId());
     }
 
     public void testGetAll() {
@@ -44,7 +43,7 @@ public class LabelServiceTest extends TestCase {
 
     }
 
-    public void testSaveNewLabel() {
+    public void testSave() {
         LabelRepository labelRepositoryMock = Mockito.mock(LabelRepository.class);
         assertEquals(labelRepositoryMock.save(label), label);
 
