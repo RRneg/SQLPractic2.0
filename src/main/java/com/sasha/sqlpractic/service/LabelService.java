@@ -9,8 +9,7 @@ import java.util.List;
 public class LabelService {
     LabelRepository labelrepository = new JDBCLabelRepositoryImpl();
 
-    public Label update(Label label){
-        return labelrepository.update(label);
+    public Label update(Label label){return labelrepository.update(label);
     }
 
     public Label getById(Integer id){
