@@ -21,7 +21,8 @@ public class LabelServiceTest extends TestCase {
 
     public void testUpdate() {
         LabelRepository labelRepositoryMock = Mockito.mock(LabelRepository.class);
-        assertEquals(labelRepositoryMock.update(label), label);
+        LabelService labelService = new LabelService(labelRepositoryMock);
+        assertEquals(labelService.update(label), label);
 
     }
 
@@ -32,8 +33,9 @@ public class LabelServiceTest extends TestCase {
     }
 
     public void testDeleteById() {
+        LabelService labelService = new LabelService();
         LabelRepository labelRepositoryMock = Mockito.mock(LabelRepository.class);
-        Mockito.verify(labelRepositoryMock, Mockito.times(1)).deleteById(label.getId());
+        Mockito.verify(labelService, Mockito.times(1)).deleteById(label.getId());
     }
 
     public void testGetAll() {

@@ -7,6 +7,18 @@ import com.sasha.sqlpractic.repository.jdbc.JDBCLabelRepositoryImpl;
 import java.util.List;
 
 public class LabelService {
+
+    private LabelRepository labelRepositoryConstr;
+
+    public LabelService(){
+    }
+
+    public LabelService(LabelRepository labelRepositoryConstr){
+        this.labelRepositoryConstr = labelRepositoryConstr;
+    }
+
+
+
     LabelRepository labelrepository = new JDBCLabelRepositoryImpl();
 
     public Label update(Label label){return labelrepository.update(label);
