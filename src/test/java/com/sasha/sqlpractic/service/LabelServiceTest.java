@@ -43,8 +43,7 @@ public class LabelServiceTest {
 
     @Test
     public void testGetAll() {
-        List<Label> labels = new ArrayList<>();
-        labels.add(getLabel());
+        List<Label> labels = List.of(getLabel());
         when(labelRepository.getAll()).thenReturn(labels);
         assertEquals(serviceUnderTest.getAll(), labels);
     }
