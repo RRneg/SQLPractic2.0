@@ -12,7 +12,7 @@ public class PostController {
 
 
     public Post saveNewPost(Post post) {
-       return postService.saveNewPost(post);
+       return postService.save(post);
     }
 
 

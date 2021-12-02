@@ -8,6 +8,16 @@ import com.sasha.sqlpractic.repository.jdbc.JDBCPostRepositoryImpl;
 import java.util.List;
 
 public class PostService {
+
+    private PostRepository postRepositoryConstr;
+
+    public PostService(){
+    }
+
+    public PostService(PostRepository postRepositoryConstr){
+        this.postRepositoryConstr = postRepositoryConstr;
+    }
+
     private PostRepository postRepository = new JDBCPostRepositoryImpl();
 
     public Post getById(Integer id){
@@ -24,7 +34,7 @@ public class PostService {
         return postRepository.getAll();
     }
 
-    public Post saveNewPost(Post post){
+    public Post save(Post post){
         return postRepository.save(post);
     }
 }

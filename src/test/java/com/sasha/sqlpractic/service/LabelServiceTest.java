@@ -3,8 +3,6 @@ package com.sasha.sqlpractic.service;
 
 import com.sasha.sqlpractic.model.Label;
 import com.sasha.sqlpractic.repository.LabelRepository;
-import junit.framework.TestCase;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -17,7 +15,7 @@ import static org.mockito.Mockito.*;
 public class LabelServiceTest {
 
     private final LabelRepository labelRepository = mock(LabelRepository.class);
-    private LabelService serviceUnderTest = new LabelService(labelRepository);
+    private  LabelService serviceUnderTest = new LabelService(labelRepository);
 
     @Test
     public void testUpdate() {
