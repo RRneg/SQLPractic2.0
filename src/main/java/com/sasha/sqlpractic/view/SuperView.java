@@ -41,6 +41,7 @@ public class SuperView {
                     break;
                 case 4:
                     System.out.println(menu41);
+                    JdbcUtils.closeConnection();
                     break;
             }
 

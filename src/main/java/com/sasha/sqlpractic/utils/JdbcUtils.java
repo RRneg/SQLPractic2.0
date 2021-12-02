@@ -24,6 +24,14 @@ public class JdbcUtils {
 
     }
 
+    public static void closeConnection(){
+        try {
+            getConnect().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static PreparedStatement getPrStatement(String sql) throws SQLException {
         return getConnect().prepareStatement(sql);
     }
