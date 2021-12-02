@@ -2,11 +2,22 @@ package com.sasha.sqlpractic.service;
 
 
 import com.sasha.sqlpractic.model.Writer;
+import com.sasha.sqlpractic.repository.WriterRepository;
 import com.sasha.sqlpractic.repository.jdbc.JDBCWriterRepositoryImpl;
 
 import java.util.List;
 
 public class WriterService {
+
+    private WriterRepository writerRepositoryConstr;
+
+    public WriterService(){}
+
+    public WriterService(WriterRepository writerRepositoryConstr){
+        this.writerRepositoryConstr = writerRepositoryConstr;
+    }
+
+
     JDBCWriterRepositoryImpl jdbcWriterRepository = new JDBCWriterRepositoryImpl();
 
     public Writer getById(Integer id){
@@ -25,7 +36,7 @@ public class WriterService {
         return jdbcWriterRepository.getAll();
     }
 
-    public Writer saveNewWriter(Writer writer){
+    public Writer save(Writer writer){
         return jdbcWriterRepository.save(writer);
     }
 }
