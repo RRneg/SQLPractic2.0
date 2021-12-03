@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
-public class WriterServiceTeat {
+public class WriterServiceTest {
 
 
 private final WriterRepository writerRepository = mock(WriterRepository.class);

@@ -3,40 +3,39 @@ package com.sasha.sqlpractic.service;
 
 import com.sasha.sqlpractic.model.Writer;
 import com.sasha.sqlpractic.repository.WriterRepository;
-import com.sasha.sqlpractic.repository.jdbc.JDBCWriterRepositoryImpl;
 
 import java.util.List;
 
 public class WriterService {
 
-    private WriterRepository writerRepositoryConstr;
+    private WriterRepository writerRepository;
 
     public WriterService(){}
 
-    public WriterService(WriterRepository writerRepositoryConstr){
-        this.writerRepositoryConstr = writerRepositoryConstr;
+    public WriterService(WriterRepository writerRepository){
+        this.writerRepository = writerRepository;
     }
 
 
-    JDBCWriterRepositoryImpl jdbcWriterRepository = new JDBCWriterRepositoryImpl();
+
 
     public Writer getById(Integer id){
-        return jdbcWriterRepository.getById(id);
+        return writerRepository.getById(id);
     }
 
     public Writer update(Writer writer){
-        return jdbcWriterRepository.update(writer);
+        return writerRepository.update(writer);
     }
 
     public void deleteById(Integer id){
-        jdbcWriterRepository.getById(id);
+        writerRepository.deleteById(id);
     }
 
     public List<Writer> getAll(){
-        return jdbcWriterRepository.getAll();
+        return writerRepository.getAll();
     }
 
     public Writer save(Writer writer){
-        return jdbcWriterRepository.save(writer);
+        return writerRepository.save(writer);
     }
 }

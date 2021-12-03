@@ -3,22 +3,21 @@ package com.sasha.sqlpractic.service;
 
 import com.sasha.sqlpractic.model.Post;
 import com.sasha.sqlpractic.repository.PostRepository;
-import com.sasha.sqlpractic.repository.jdbc.JDBCPostRepositoryImpl;
 
 import java.util.List;
 
 public class PostService {
 
-    private PostRepository postRepositoryConstr;
+    private PostRepository postRepository;
 
     public PostService(){
     }
 
     public PostService(PostRepository postRepositoryConstr){
-        this.postRepositoryConstr = postRepositoryConstr;
+        this.postRepository = postRepositoryConstr;
     }
 
-    private PostRepository postRepository = new JDBCPostRepositoryImpl();
+
 
     public Post getById(Integer id){
         return postRepository.getById(id);
