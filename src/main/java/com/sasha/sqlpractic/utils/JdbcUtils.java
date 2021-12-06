@@ -6,9 +6,9 @@ public class JdbcUtils {
     private static Connection connection;
 
     private static Connection getConnect() {
-        String url = "jdbc:mysql://localhost/Practice";
-        String user = "user";
-        String password = "password";
+        String url = "jdbc:mysql://localhost:3306/Practice?serverTimezone=Europe/Kiev&useSSL=false";
+        String user = "root";
+        String password = "Rfvbgt79";
         if (connection == null) {
             try {
                 Driver driver = new com.mysql.jdbc.Driver();
