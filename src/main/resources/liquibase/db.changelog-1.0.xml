@@ -23,10 +23,10 @@
             <column name="CONTENT" type="varchar(255)">
             </column>
 
-            <column name="CREATED" type="datatime" defaultValueDate="now">
+            <column name="CREATED" type="datetime" defaultValueDate="now()">
             </column>
 
-            <column name="UPDATED" type="timestamp(14)" defaultValueDate="now">
+            <column name="UPDATED" type="timestamp(6)" defaultValueDate="now(6)">
             </column>
 
             <column name="POST_STATUS" type="varchar(20)">
@@ -53,6 +53,7 @@
     <changeSet id="Creating Writers" author="RRneg">
         <createTable tableName="WRITERS">
             <column name="ID" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
 
             <column name="FIRST_NAME" type="varchar(255)">
