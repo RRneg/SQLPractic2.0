@@ -6,12 +6,13 @@ import com.sasha.sqlpractic.utils.JdbcUtils;
 
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     public Label update(Label label) {
-        String sql = "INSERT LABELS(NAME) VALUE(?) WHERE ID= ?";
+        String sql = "UPDATE LABELS SET NAME = ? WHERE ID= ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, label.getName());
             pstm.setInt(2, label.getId());
@@ -42,17 +43,17 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     public Label getById(Integer id) {
         Label label = new Label();
-        String sql = "SELECT from LABELS where ID = ?";
+        String sql = "SELECT * from LABELS where ID = ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             ResultSet rs = pstm.executeQuery();
+            rs.next();
             label.setId(rs.getInt(1));
             label.setName(rs.getString(2));
-            return label;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
+        return label;
     }
 
     public void deleteById(Integer id) {
@@ -66,7 +67,7 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
     }
 
     public List<Label> getAll() {
-        List<Label> labels = null;
+        List<Label> labels = new ArrayList<>();
         String sql = "SELECT * from LABELS";
 
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {

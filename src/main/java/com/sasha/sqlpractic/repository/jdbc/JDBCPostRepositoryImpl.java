@@ -45,7 +45,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     }
 
     public Post update(Post post) {
-        String sql = "UPDATE POSTS CONTENT=? WHERE ID = ?";
+        String sql = "UPDATE POSTS SET CONTENT=? WHERE ID = ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, post.getContent());
             pstm.setInt(2, post.getId());
@@ -126,8 +126,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
 
     public Post save(Post post) {
-        String sql = "INSERT POSTS CONTENT=?, POST_STATUS=?";
-        String sql1 = "SELECT FROM POSTS WHERE ID = ?";
+        String sql = "INSERT POSTS (CONTENT, POST_STATUS) VALUE(?,?)";
         String content = post.getContent();
         List<Label> labels = post.getLabels();
         post.setPostStatus(PostStatus.ACTIVE);
