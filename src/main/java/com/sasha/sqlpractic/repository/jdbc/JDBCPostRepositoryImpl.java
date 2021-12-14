@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class JDBCPostRepositoryImpl implements PostRepository {
@@ -73,7 +74,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         Post post = new Post();
         Label label = new Label();
         List<Label> labels = new ArrayList<>();
-        String sql = "SELECT from POSTS WHERE POST_STATUS <> DELETE" +
+        String sql = "SELECT * from POSTS WHERE POST_STATUS <> DELETE" +
                 "JOIN POST_LABELS ON POST_LABELS.POST_ID = POSTS.ID " +
                 "JOIN LABELS ON LABELS.ID = POST_LABEL.LABELS_ID";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
@@ -136,14 +137,12 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             pstm.execute();
             ResultSet rs = pstm.getGeneratedKeys();
             int id = 0;
-            String created = null;
             if (rs.next()) {
                 id = rs.getInt(1);
-                created = rs.getDate(2).toString();
             }
             insertLabelsInPostLabels(id, labels);
             post.setId(id);
-            post.setCreated(created);
+            post.setCreated(new Date().toString());// необходимо исправить
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -153,7 +152,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private void insertLabelsInPostLabels(Integer postId, List<Label> labels) {
         for (Label label : labels) {
-            String sql = "INSERT POST_LABELS (LABEL_ID, POSTS_ID) " +
+            String sql = "INSERT POST_LABELS (POST_ID, LABELS_ID) " +
                     "VALUE (?, ?)";
             try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
                 pstm.setInt(1, postId);
