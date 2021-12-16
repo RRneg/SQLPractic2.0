@@ -47,10 +47,12 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     public Post update(Post post) {
         String sql = "UPDATE POSTS SET CONTENT=? WHERE ID = ?";
+        String sql2 = String.format("DELETE POST_LABELS WHERE POST_ID = %d", post.getId());
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, post.getContent());
             pstm.setInt(2, post.getId());
             pstm.executeUpdate();
+            pstm.execute(sql2);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,7 +127,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             }
             insertLabelsInPostLabels(postId, labels);
             post.setId(postId);
-            post.setCreated(new Date().toString());// необходимо исправить
+            String sql2 = String.format("SELECT CREATED FROM POSTS WHERE ID = %d", postId);
+            post.setCreated(rs.getDate(1).toString());// необходимо исправить
 
         } catch (SQLException e) {
             e.printStackTrace();
