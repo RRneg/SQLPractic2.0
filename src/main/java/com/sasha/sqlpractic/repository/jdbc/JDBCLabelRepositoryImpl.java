@@ -58,9 +58,11 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     public void deleteById(Integer id) {
         String sql = "DELETE from LABELS where ID = ?";
+        String sql2 = String.format("DELETE from post_labels where LABELS_ID =%d", id);
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
+            pstm.execute(sql2);
         } catch (SQLException e) {
             e.printStackTrace();
         }

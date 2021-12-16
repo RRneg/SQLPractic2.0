@@ -36,6 +36,10 @@ public class JdbcUtils {
         return getConnect().prepareStatement(sql);
     }
 
+    public static PreparedStatement getPrStatementScroll(String sql) throws SQLException{
+        return getConnect().prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+    }
+
     public static PreparedStatement getPrStatementBackId(String sql) throws SQLException{
         return getConnect().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }

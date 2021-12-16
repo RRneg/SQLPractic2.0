@@ -115,27 +115,23 @@ public class PostView {
     }
 
     private void viewChanceTags(int id, String labels) {
-        Post post = viewGetPostById(id);
+        Post post = postController.getPostById(id);
         post.setLabels(stringLabelToList(labels));
         System.out.println("Ваша запись успешно обновлена" + postController.update(post));
     }
 
     private void viewChangeContent(Integer id, String content) {
-        Post post = viewGetPostById(id);
+        Post post = postController.getPostById(id);
         post.setContent(content);
         System.out.println("Ваша запись успешно обновлена" + postController.update(post));
     }
 
     private void viewGetById() {
         System.out.println(menu51);
-        viewGetPostById(scanner.nextInt());
+        System.out.println(postController.getPostById(scanner.nextInt()));
     }
 
-    private Post viewGetPostById(Integer id) {
-        return postController.getPostById(id);
-    }
-
-    public void viewGetAllPosts() {
+       public void viewGetAllPosts() {
         postController.getAllPosts().stream().
                 forEach(a -> System.out.println(a));
     }

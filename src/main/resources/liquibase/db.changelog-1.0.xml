@@ -14,7 +14,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Creating POSTS" author="RRneg">
+    <changeSet id="Creating POSTS" author="root">
         <createTable tableName="POSTS">
             <column name="ID" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -34,7 +34,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Creating POST_LABELS" author="RRneg">
+    <changeSet id="Creating POST_LABELS" author="root">
         <createTable tableName="POST_LABELS">
             <column name="POST_ID" type="int">
             </column>
@@ -50,7 +50,7 @@
                                  referencedColumnNames="ID"/>
     </changeSet>
 
-    <changeSet id="Creating Writers" author="RRneg">
+    <changeSet id="Creating Writers" author="root">
         <createTable tableName="WRITERS">
             <column name="ID" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -65,7 +65,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Creating WRITER_POSTS" author="RRneg">
+    <changeSet id="Creating WRITER_POSTS" author="root">
         <createTable tableName="WRITER_POSTS">
             <column name="WRITER_ID" type="int">
             </column>

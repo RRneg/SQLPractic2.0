@@ -13,33 +13,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JDBCPostRepositoryImpl implements PostRepository {
 
     public Post getById(Integer id) {
-        String sql = "SELECT ID, CONTENT, CREATED, UPLOADED, POST_STATUS" +
-                " FROM POSTS WHERE ID = ? " +
-                "JOIN POST_LABELS ON POST.ID = POST_LABELS.POST_ID " +
-                "JOIN LABELS ON POST_LABELS.LABELS_ID = LABELS.ID";
+        String sql = "SELECT * from POSTS JOIN POST_LABELS ON POST_LABELS.POST_ID = POSTS.ID JOIN LABELS ON LABELS.ID = POST_LABELS.LABELS_ID where POSTS.ID = ? and POSTS.POST_STATUS not like \"DELETE\"";
         Post post = new Post();
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             ResultSet rs = pstm.executeQuery();
-            if (rs.getString(6).equals(PostStatus.DELETED)) {
-                post = null;
-                System.out.println("Запись с ID = " + id + " удалена или не существует...");
-            } else {
-                List<Label> labels = new ArrayList<>();
+            List<Label> labels = new ArrayList<>();
+
+            if (rs.next()) {
                 post.setId(rs.getInt(1));
                 post.setContent(rs.getString(2));
                 post.setCreated(rs.getDate(3).toString());
                 post.setUpdated(rs.getDate(4).toString());
+                post.setPostStatus(PostStatus.valueOf(rs.getString(5)));
+                labels.add(new Label(rs.getInt(8), rs.getString(9)));
+
                 while (rs.next()) {
-                    labels.add(new Label(rs.getInt(6), rs.getString(7)));
+                    labels.add(new Label(rs.getInt(8), rs.getString(9)));
                 }
                 post.setLabels(labels);
             }
-        } catch (SQLException e) {
+            }
+         catch (SQLException e) {
             e.printStackTrace();
         }
         return post;
@@ -71,59 +71,42 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
-        Post post = new Post();
-        Label label = new Label();
-        List<Label> labels = new ArrayList<>();
-        String sql = "SELECT * from POSTS WHERE POST_STATUS <> DELETE" +
-                "JOIN POST_LABELS ON POST_LABELS.POST_ID = POSTS.ID " +
-                "JOIN LABELS ON LABELS.ID = POST_LABEL.LABELS_ID";
+        String sql = "SELECT * from POSTS JOIN POST_LABELS ON POST_LABELS.POST_ID = POSTS.ID JOIN LABELS ON LABELS.ID = POST_LABELS.LABELS_ID where POSTS.POST_STATUS not like \"DELETE\"";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
-            int size = getResultSetRowCount(rs);
-            while (rs.next()) {
-
-                int postId = rs.getInt(1);
-                if (!rs.wasNull()) {
-                    labels.clear();
-                    if (rs.getRow() != 1) {
-                        posts.add(post);
+            if (rs.next()) {
+                List<Label> labels = new ArrayList<>();
+                labels.add(new Label(rs.getInt(8), rs.getString(9)));
+                posts.add(new Post(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getDate(3).toString(),
+                        rs.getDate(4).toString(),
+                        labels,
+                        PostStatus.valueOf(rs.getString(5))));
+                while (rs.next()) {
+                    List<Label> labels1 = new ArrayList<>();
+                    labels1.add(new Label(rs.getInt(8), rs.getString(9)));
+                    posts.add(new Post(
+                            rs.getInt(1),
+                            rs.getString(2),
+                            rs.getDate(3).toString(),
+                            rs.getDate(4).toString(),
+                            labels1,
+                            PostStatus.valueOf(rs.getString(5))));
                     }
-                    post.setId(postId);
-                    post.setContent(rs.getString(2));
-                    post.setCreated(rs.getDate(3).toString());
-                    post.setUpdated(rs.getDate(4).toString());
-                    post.setPostStatus(PostStatus.valueOf(rs.getString(5)));
                 }
-                int labelId = rs.getInt(6);
-                if (!rs.wasNull()) {
-                    label.setId(labelId);
-                    label.setName(rs.getString(7));
-                    labels.add(label);
-                }
-                post.setLabels(labels);
-                if (rs.getRow() == size) {
-                    posts.add(post);
-                }
+             else {
+                System.out.println("The database is empty");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return posts;
+        return getAllProcessed(posts);
     }
 
 
-    private int getResultSetRowCount(ResultSet rs) {
-        int size = 0;
-        try {
-            rs.last();
-            size = rs.getRow();
-            rs.beforeFirst();
-        } catch (SQLException ex) {
-            return 0;
-        }
-        return size;
-    }
 
 
     public Post save(Post post) {
@@ -136,12 +119,12 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             pstm.setString(2, PostStatus.ACTIVE.toString());
             pstm.execute();
             ResultSet rs = pstm.getGeneratedKeys();
-            int id = 0;
+            int postId = 0;
             if (rs.next()) {
-                id = rs.getInt(1);
+                postId = rs.getInt(1);
             }
-            insertLabelsInPostLabels(id, labels);
-            post.setId(id);
+            insertLabelsInPostLabels(postId, labels);
+            post.setId(postId);
             post.setCreated(new Date().toString());// необходимо исправить
 
         } catch (SQLException e) {
@@ -163,4 +146,28 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             }
         }
     }
+
+    private List<Post> getAllProcessed(List<Post> posts) {
+        int size = posts.size();
+        if(size == 0 || size == 1){
+            return posts;
+        }
+        else {
+            int k =1;
+            while (k!=size){
+                if (posts.get(k-1).getId() == posts.get(k).getId()){
+                    posts.get(k-1).getLabels().addAll(posts.get(k).getLabels());
+                    posts.remove(k);
+                    size = size-1;
+                }
+                else {k = k+1;}
+            }
+
+            return posts;
+        }
+        }
+
+
+
+
 }
