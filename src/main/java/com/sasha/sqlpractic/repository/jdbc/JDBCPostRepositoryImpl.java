@@ -61,7 +61,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     }
 
     public void deleteById(Integer id) {
-        String sql = "UPDATE POSTS(POST_STATUS) VALUE(DELETE) WHERE ID =?";
+        String sql = "UPDATE POSTS SET POST_STATUS = 'DELETE' WHERE ID =?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
@@ -128,7 +128,9 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             insertLabelsInPostLabels(postId, labels);
             post.setId(postId);
             String sql2 = String.format("SELECT CREATED FROM POSTS WHERE ID = %d", postId);
-            post.setCreated(rs.getDate(1).toString());// необходимо исправить
+            PreparedStatement pstm1 = JdbcUtils.getPrStatement(sql2);
+            ResultSet rs1 = pstm1.executeQuery();
+            post.setCreated(rs1.getDate(1).toString());// необходимо исправить
 
         } catch (SQLException e) {
             e.printStackTrace();
