@@ -7,6 +7,7 @@ import com.sasha.sqlpractic.model.Post;
 import com.sasha.sqlpractic.repository.PostRepository;
 import com.sasha.sqlpractic.utils.JdbcUtils;
 
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -112,26 +113,28 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
 
     public Post save(Post post) {
+
         String sql = "INSERT POSTS (CONTENT, POST_STATUS) VALUE(?,?)";
         String content = post.getContent();
         List<Label> labels = post.getLabels();
         post.setPostStatus(PostStatus.ACTIVE);
-        try (PreparedStatement pstm = JdbcUtils.getPrStatmentBackIdCreated(sql)) {
+        try (PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)) {
             pstm.setString(1, content);
             pstm.setString(2, PostStatus.ACTIVE.toString());
             pstm.execute();
             ResultSet rs = pstm.getGeneratedKeys();
-            int postId = 0;
-            if (rs.next()) {
-                postId = rs.getInt(1);
+            int id = 0;
+            if(rs.next()) {
+                id = rs.getInt(1);
+                post.setId(id);
             }
-            insertLabelsInPostLabels(postId, labels);
-            post.setId(postId);
-            String sql2 = String.format("SELECT CREATED FROM POSTS WHERE ID = %d", postId);
+            insertLabelsInPostLabels(id, labels);
+            String sql2 = String.format("SELECT CREATED FROM POSTS WHERE ID = %d", id);
             PreparedStatement pstm1 = JdbcUtils.getPrStatement(sql2);
             ResultSet rs1 = pstm1.executeQuery();
-            post.setCreated(rs1.getDate(1).toString());// необходимо исправить
-
+            if (rs1.next()) {
+                post.setCreated(rs1.getDate(1).toString());// необходимо исправить
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
