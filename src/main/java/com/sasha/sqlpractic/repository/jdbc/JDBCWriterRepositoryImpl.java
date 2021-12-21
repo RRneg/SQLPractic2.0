@@ -18,18 +18,16 @@ import java.util.List;
 
 public class JDBCWriterRepositoryImpl implements WriterRepository {
 
-    JDBCPostRepositoryImpl jdbcPostRepository = new JDBCPostRepositoryImpl();
-
     private void insertPostsInWriterPosts(Integer writerId, List<Post> posts) {
-        String sql = "INSERT WRITER_POSTS(WRITER_ID, POST_ID) VALUE (?, ?)";
-        try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
-            for (Post post : posts) {
+        for (Post post : posts) {
+            String sql = "INSERT WRITER_POSTS(WRITER_ID, POST_ID) VALUE (?, ?)";
+            try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
                 pstm.setInt(1, writerId);
                 pstm.setInt(2, post.getId());
                 pstm.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -79,8 +77,8 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
 
 
     public Writer update(Writer writer) {
-        String sql = "UPDATE WRITERS SET FIRST_NAME =? , LAST NAME=? WHERE ID = ?";
-        String sql2 = String.format("DELETE FROM writer_labels where WRITERS_ID = %d", writer.getId());
+        String sql = "UPDATE WRITERS SET FIRST_NAME =? , LAST_NAME=? WHERE ID = ?";
+        String sql2 = String.format("DELETE FROM writer_posts where WRITER_ID = %d", writer.getId());
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, writer.getFirstName());
             pstm.setString(2, writer.getLastName());

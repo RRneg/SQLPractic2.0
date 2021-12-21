@@ -53,7 +53,7 @@ public class Writer {
 
     @Override
     public String toString() {
-        return "com.sasha.sqlpractice.model.Writer{" +
+        return "Writer{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

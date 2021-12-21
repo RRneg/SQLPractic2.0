@@ -6,6 +6,7 @@ import com.sasha.sqlpractic.controller.WriterController;
 import com.sasha.sqlpractic.model.Post;
 import com.sasha.sqlpractic.model.Writer;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -23,8 +24,8 @@ public class WriterView {
     private final String menu211 = "Введите First Name";
     private final String menu22 = "Для изменения Last Name нажмите 2";
     private final String menu221 = "Введите Last Name";
-    private final String menu23 = "Для изменения списка com.sasha.sqlpractice.model.Post нажмите 3";
-    private final String menu231 = "Введите список id записей com.sasha.sqlpractice.model.Post через запятую";
+    private final String menu23 = "Для изменения списка Post нажмите 3";
+    private final String menu231 = "Введите список id записей Post через запятую";
     private final String menu3151 = "Введите id записи";
     private final String menu32 = "Запись успешно удалена";
     private final String menu61 = "Вы успешно вышли";
@@ -99,13 +100,17 @@ public class WriterView {
         int choice = scanner.nextInt();
         switch (choice) {
             case 1:
+                System.out.println(menu211);
                 writer.setFirstName(scanner.next());
                 break;
             case 2:
+                System.out.println(menu221);
                 writer.setLastName(scanner.next());
                 break;
             case 3:
-                System.out.println(postController.getAllPosts());
+                postController.getAllPosts().stream().
+                        forEach(a -> System.out.println(a));
+                System.out.println(menu231);
                 writer.setPosts(postIdsToList(scanner.next()));
                 break;
         }

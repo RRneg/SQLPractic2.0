@@ -74,7 +74,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT * FROM writers JOIN writer_posts ON writers.ID = writer_posts.WRITER_ID JOIN posts ON writer_posts.POST_ID=posts.ID JOIN post_labels ON posts.ID = post_labels.POST_ID JOIN labels ON post_labels.LABELS_ID = labels.ID WHERE posts.POST_STATUS not like \"DELETE\" order by writers.ID";
+        String sql = "SELECT * FROM posts JOIN post_labels ON posts.ID = post_labels.POST_ID JOIN labels ON post_labels.LABELS_ID = labels.ID WHERE posts.POST_STATUS not like \"DELETE\" order by posts.ID";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
