@@ -5,6 +5,7 @@ import com.sasha.sqlpractic.model.Label;
 import com.sasha.sqlpractic.model.Writer;
 import com.sasha.sqlpractic.model.Post;
 import com.sasha.sqlpractic.model.PostStatus;
+import com.sasha.sqlpractic.repository.PostRepository;
 import com.sasha.sqlpractic.repository.WriterRepository;
 import com.sasha.sqlpractic.utils.JdbcUtils;
 import liquibase.pro.packaged.L;
@@ -35,41 +36,40 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
 
     public Writer getById(Integer id) {
         Writer writer = new Writer();
-        Post post = new Post();
         List<Post> posts = new ArrayList<>();
-        Label label = new Label();
-        List<Label> labels = new ArrayList<>();
-
-        String sql = "SELECT ID, FIRST_NAME, LAST_NAME FROM Writers  JOIN WRITER_LABELS ON Writers.ID = WRITER_POSTS.WRITER_ID JOIN POSTS ON WRITER_POSTS.POST_ID=POSTS.ID JOIN POST_LABELS ON POST.ID = POST_LABELS.POST_ID JOIN LABELS ON POST_LABELS.LABELS_ID = LABELS.ID WHERE WRITERS.ID=? AND POSTS.POST_STATUS not like \"DELETE\"";
+        String sql = "SELECT * FROM writers JOIN writer_posts ON writers.ID = writer_posts.WRITER_ID JOIN posts ON writer_posts.POST_ID=posts.ID JOIN post_labels ON posts.ID = post_labels.POST_ID JOIN labels ON post_labels.LABELS_ID = labels.ID WHERE posts.POST_STATUS not like \"DELETE\" and writers.ID = ?";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setInt(1,id);
             ResultSet rs = pstm.executeQuery();
+            if (rs.next()){
+writer.setId(rs.getInt(1));
+writer.setFirstName(rs.getString(2));
+writer.setLastName(rs.getString(3));
+                List<Label> labels = new ArrayList<>();
+                labels.add(new Label(rs.getInt(13), rs.getString(14)));
+                posts.add(new Post(
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDate(8).toString(),
+                        rs.getDate(9).toString(),
+                        labels,
+                        PostStatus.valueOf(rs.getString(10))));
+            }
+
             while (rs.next()) {
-                writer.setId(rs.getInt(1));
-                writer.setFirstName(rs.getString(2));
-                writer.setLastName(rs.getString(3));
+                List<Label> labels1 = new ArrayList<>();
+                labels1.add(new Label(rs.getInt(13), rs.getString(14)));
+                posts.add(new Post(
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDate(8).toString(),
+                        rs.getDate(9).toString(),
+                        labels1,
+                        PostStatus.valueOf(rs.getString(10))));
+
             }
-            int postId = rs.getInt(4);
-            if (!rs.wasNull()) {
-                post.setId(postId);
-                post.setContent(rs.getString(5));
-                post.setCreated(rs.getDate(6).toString());
-                post.setUpdated(rs.getDate(7).toString());
-                post.setPostStatus(PostStatus.valueOf(rs.getString(8)));
-            }
-            else {
-                int labelId = rs.getInt(9);
-                if(!rs.wasNull()){
-                  label.setId(labelId);
-                  label.setName(rs.getString(10));
-                  labels.add(label);
-                }
-                post.setLabels(labels);
-            }
-            if (!post.getPostStatus().equals(PostStatus.DELETED)){
-                posts.add(post);
-            }
-            writer.setPosts(posts);
+            JDBCPostRepositoryImpl postRepository = new JDBCPostRepositoryImpl();
+            writer.setPosts(postRepository.getAllProcessed(posts));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -151,10 +151,14 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
          catch (SQLException e) {
             e.printStackTrace();
         }
+        return getAllProcessed(writers);
+    }
+
+    private List<Writer> getAllProcessed(List<Writer> writers) {
         return writers;
     }
 
-   public Writer save(Writer writer) {
+    public Writer save(Writer writer) {
         String sql = "INSERT WRITERS (FIRST_NAME, LAST_NAME) VALUE (?, ?)";
         try(PreparedStatement pstm = JdbcUtils.getPrStatementBackId(sql)){
             pstm.setString(1, writer.getFirstName());

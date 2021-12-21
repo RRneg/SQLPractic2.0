@@ -155,7 +155,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         }
     }
 
-    private List<Post> getAllProcessed(List<Post> posts) {
+    public List<Post> getAllProcessed(List<Post> posts) {
         int size = posts.size();
         if(size == 0 || size == 1){
             return posts;
