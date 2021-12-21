@@ -48,7 +48,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     public Post update(Post post) {
         String sql = "UPDATE POSTS SET CONTENT=? WHERE ID = ?";
-        String sql2 = String.format("DELETE POST_LABELS WHERE POST_ID = %d", post.getId());
+        String sql2 = String.format("DELETE FROM POST_LABELS WHERE POST_ID = %d", post.getId());
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             pstm.setString(1, post.getContent());
             pstm.setInt(2, post.getId());
@@ -74,7 +74,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT * from POSTS JOIN POST_LABELS ON POST_LABELS.POST_ID = POSTS.ID JOIN LABELS ON LABELS.ID = POST_LABELS.LABELS_ID where POSTS.POST_STATUS not like \"DELETE\"";
+        String sql = "SELECT * FROM writers JOIN writer_posts ON writers.ID = writer_posts.WRITER_ID JOIN posts ON writer_posts.POST_ID=posts.ID JOIN post_labels ON posts.ID = post_labels.POST_ID JOIN labels ON post_labels.LABELS_ID = labels.ID WHERE posts.POST_STATUS not like \"DELETE\" order by writers.ID";
         try (PreparedStatement pstm = JdbcUtils.getPrStatement(sql)) {
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {

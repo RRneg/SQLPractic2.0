@@ -45,8 +45,11 @@
         <addUniqueConstraint tableName="POST_LABELS"
                              columnNames="POST_ID, LABELS_ID"
                              constraintName="UNIQUE" />
-        <addForeignKeyConstraint baseTableName="POSTS" baseColumnNames="ID"
-                                 constraintName="POST_LABELS" referencedTableName="LABELS"
+        <addForeignKeyConstraint baseTableName="POST_LABELS" baseColumnNames="LABELS_ID"
+                                 constraintName="POST_LABELS_LABEL_ID" referencedTableName="LABELS"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint baseTableName="POST_LABELS" baseColumnNames="POST_ID"
+                                 constraintName="POST_LABELS_POST_ID" referencedTableName="POSTS"
                                  referencedColumnNames="ID"/>
     </changeSet>
 
