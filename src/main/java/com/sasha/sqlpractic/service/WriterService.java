@@ -11,37 +11,33 @@ public class WriterService {
 
     private WriterRepository writerRepository;
 
-    public WriterService(){}
+    public WriterService() {
+        this.writerRepository = new JDBCWriterRepositoryImpl();
+    }
 
-    public WriterService(WriterRepository writerRepository){
+    public WriterService(WriterRepository writerRepository) {
         this.writerRepository = writerRepository;
     }
 
 
-
-
-    public Writer getById(Integer id){
-        return getWriterRepository().getById(id);
+    public Writer getById(Integer id) {
+        return writerRepository.getById(id);
     }
 
-    public Writer update(Writer writer){
-        return getWriterRepository().update(writer);
+    public Writer update(Writer writer) {
+        return writerRepository.update(writer);
     }
 
-    public void deleteById(Integer id){
-        getWriterRepository().deleteById(id);
+    public void deleteById(Integer id) {
+        writerRepository.deleteById(id);
     }
 
-    public List<Writer> getAll(){
-        return getWriterRepository().getAll();
+    public List<Writer> getAll() {
+        return writerRepository.getAll();
     }
 
-    public Writer save(Writer writer){
-        return getWriterRepository().save(writer);
+    public Writer save(Writer writer) {
+        return writerRepository.save(writer);
     }
 
-    private WriterRepository getWriterRepository(){
-        WriterRepository writerRepository = new JDBCWriterRepositoryImpl();
-        return writerRepository;
-    }
 }

@@ -11,35 +11,34 @@ public class PostService {
 
     private PostRepository postRepository;
 
-    public PostService(){
+    public PostService() {
+        this.postRepository = new JDBCPostRepositoryImpl();
     }
 
-    public PostService(PostRepository postRepositoryConstr){
+    public PostService(PostRepository postRepositoryConstr) {
         this.postRepository = postRepositoryConstr;
     }
 
 
-
-    public Post getById(Integer id){
-        return getPostRepository().getById(id);
+    public Post getById(Integer id) {
+        return postRepository.getById(id);
     }
 
-    public Post update(Post post){
-        return getPostRepository().update(post);
+    public Post update(Post post) {
+        return postRepository.update(post);
     }
 
-    public void deleteById(Integer id){getPostRepository().deleteById(id);}
-
-    public List<Post> getAll(){
-        return getPostRepository().getAll();
+    public void deleteById(Integer id) {
+        postRepository.deleteById(id);
     }
 
-    public Post save(Post post){
-        return getPostRepository().save(post);
+    public List<Post> getAll() {
+        return postRepository.getAll();
     }
 
-    private PostRepository getPostRepository(){
-        PostRepository postRepository = new JDBCPostRepositoryImpl();
-        return postRepository;
+    public Post save(Post post) {
+        return postRepository.save(post);
     }
+
+
 }

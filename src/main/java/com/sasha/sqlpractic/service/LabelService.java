@@ -10,37 +10,33 @@ public class LabelService {
 
     private LabelRepository labelRepository;
 
-    public LabelService(){
+    public LabelService() {
+        this.labelRepository = new JDBCLabelRepositoryImpl();
     }
 
-    public LabelService(LabelRepository labelRepository){
+    public LabelService(LabelRepository labelRepository) {
         this.labelRepository = labelRepository;
     }
 
 
-
-
-
-    public Label update(Label label){return getLabelRepository().update(label);}
-
-    public Label getById(Integer id){
-        return getLabelRepository().getById(id);
+    public Label update(Label label) {
+        return labelRepository.update(label);
     }
 
-    public void deleteById(Integer id){
-        getLabelRepository().deleteById(id);
+    public Label getById(Integer id) {
+        return labelRepository.getById(id);
     }
 
-    public List<Label> getAll(){
-        return getLabelRepository().getAll();
+    public void deleteById(Integer id) {
+        labelRepository.deleteById(id);
     }
 
-    public Label saveNewLabel(Label label){
-        return getLabelRepository().save(label);
+    public List<Label> getAll() {
+        return labelRepository.getAll();
     }
 
-    private LabelRepository getLabelRepository(){
-        LabelRepository labelRepository = new JDBCLabelRepositoryImpl();
-        return labelRepository;
+    public Label saveNewLabel(Label label) {
+        return labelRepository.save(label);
     }
+
 }
